@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{C3EE279E-A36C-47CA-8055-E3E72CE7C335}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhunSharp", "PhunSharp\PhunSharp.csproj", "{7646D578-1A15-48C4-8591-0A40148EAF45}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3EE279E-A36C-47CA-8055-E3E72CE7C335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3EE279E-A36C-47CA-8055-E3E72CE7C335}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3EE279E-A36C-47CA-8055-E3E72CE7C335}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3EE279E-A36C-47CA-8055-E3E72CE7C335}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7646D578-1A15-48C4-8591-0A40148EAF45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7646D578-1A15-48C4-8591-0A40148EAF45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7646D578-1A15-48C4-8591-0A40148EAF45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7646D578-1A15-48C4-8591-0A40148EAF45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B8146A4-B3C6-4A7D-B5C0-6E47C10701F3}
+	EndGlobalSection
+EndGlobal
