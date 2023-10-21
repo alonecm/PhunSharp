@@ -60,11 +60,23 @@
     <Compile Include="Archive\ArchiveInfo.cs" />
     <Compile Include="ArchiveReader.cs" />
     <Compile Include="Archive\ArchiveSetting.cs" />
-    <Compile Include="Archive\BaseEntity.cs" />
-    <Compile Include="Archive\GeomEntity.cs" />
-    <Compile Include="Archive\NonGeomEntity.cs" />
+    <Compile Include="Entity\BaseEntity.cs" />
+    <Compile Include="Entity\Box.cs" />
+    <Compile Include="Entity\Circle.cs" />
+    <Compile Include="Entity\Fixjoint.cs" />
+    <Compile Include="Entity\GeomEntity.cs" />
     <Compile Include="Archive\ArchiveFile.cs" />
     <Compile Include="Archive\ArchiveZip.cs" />
+    <Compile Include="Entity\Hinge.cs" />
+    <Compile Include="Entity\ICollide.cs" />
+    <Compile Include="Entity\IGeomExtra.cs" />
+    <Compile Include="Entity\IPosition.cs" />
+    <Compile Include="Entity\ISize.cs" />
+    <Compile Include="Entity\Laser.cs" />
+    <Compile Include="Entity\Pen.cs" />
+    <Compile Include="Entity\Plane.cs" />
+    <Compile Include="Entity\Polygon.cs" />
+    <Compile Include="Entity\Thruster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

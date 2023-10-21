@@ -14,6 +14,7 @@ namespace PhunSharp.ArchiveSyntax
     {
         public ArchiveParser(LexicalResult lexicalResult) : base(lexicalResult)
         {
+
         }
 
         public override SyntaxTree Parse()
