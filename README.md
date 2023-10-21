@@ -1,2 +1,2 @@
 # PhunSharp
-一个基于C#的Algodoo存档文件修改类库
+一个基于Algodoo存档Phz和Phn文件的C#类库
