@@ -1,6 +1,6 @@
 ﻿namespace PhunSharp.Entity
 {
-    public sealed class Pen : BaseEntity, IPosition, ISize
+    public sealed class Pen : BaseEntity, IPosition, ISize, IRotation
     {
         public string Size { get; set; }
         public string Pos { get; set; }

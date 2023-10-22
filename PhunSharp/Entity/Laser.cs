@@ -1,6 +1,14 @@
 ﻿namespace PhunSharp.Entity
 {
-    public sealed class Laser : BaseEntity, IPosition, ISize, ICollide
+    public interface ILegacyMode
+    {
+        /// <summary>
+        /// 是否使用传统模式
+        /// </summary>
+        string LegacyMode { get; set; }
+    }
+
+    public sealed class Laser : BaseEntity, IPosition, ISize, ICollide, IFollowGeometry, IRotation, ILegacyMode
     {
         public string Size { get; set; }
         public string Pos { get; set; }
@@ -14,13 +22,7 @@
         /// 渐变距离
         /// </summary>
         public string FadeDist { get; set; }
-        /// <summary>
-        /// 是否跟随几何体旋转
-        /// </summary>
         public string FollowGeometry { get; set; }
-        /// <summary>
-        /// 是否使用传统模式
-        /// </summary>
         public string LegacyMode { get; set; }
         /// <summary>
         /// 最大切割距离乘数

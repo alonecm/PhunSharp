@@ -94,5 +94,10 @@ namespace PhunSharp.Entity
         public string Pos { get; set; }
         public string CollideSet { get; set; }
         public string CollideWater { get; set; }
+        /// <summary>
+        /// 碰撞时执行的代码
+        /// </summary>
+        public string OnCollide { get; set; }
+
     }
 }

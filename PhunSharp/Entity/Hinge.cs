@@ -1,6 +1,6 @@
 ﻿namespace PhunSharp.Entity
 {
-    public sealed class Hinge : BaseEntity, ISize
+    public sealed class Hinge : BaseEntity, ISize, ILegacyMode
     {
         public string Size { get; set; }
         /// <summary>
@@ -47,9 +47,6 @@
         /// 冲击破坏力上限
         /// </summary>
         public string ImpulseLimit { get; set; }
-        /// <summary>
-        /// 传统模式
-        /// </summary>
         public string LegacyMode { get; set; }
         /// <summary>
         /// 马达
