@@ -172,7 +172,7 @@ namespace PhunSharp
         /// <returns>Phun存档</returns>
         private static ArchiveFile AnalyzeScene(string sceneThyme)
         {
-            return ArchiveAnalyzer.GetInstance.Transform(sceneThyme);
+            return ArchiveAnalyzer.Instance.Transform(sceneThyme);
         }
 
         /// <summary>

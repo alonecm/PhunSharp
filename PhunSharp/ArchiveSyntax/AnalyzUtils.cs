@@ -15,14 +15,15 @@ namespace PhunSharp.ArchiveSyntax
         /// <param name="content"></param>
         internal static Dictionary<string, object> AnalyzeContent(this CharStream cs)
         {
-            var dic=new Dictionary<string, object>();
+            var dic = new Dictionary<string, object>();
             //解析所有内容
             var itemName = new StringBuilder();
             while (!cs.IsEnd())
             {
                 //先记录名称
                 itemName.Append(cs.Next());
-                if (cs.Peek(0) == '=')
+                //如果是直接赋值号则读入
+                if (cs.Current == '=')
                 {
                     cs.Next();
                     var name = itemName.ToString();
@@ -33,7 +34,7 @@ namespace PhunSharp.ArchiveSyntax
                     itemName.Clear();
                 }
                 //检测当前是否是:=，是则读取值
-                else if (cs.Peek(0) == ':' && cs.Peek(1) == '=')
+                else if (cs.Current == ':' && cs.Peek(1) == '=')
                 {
                     //跳过这俩东西
                     cs.Next();
@@ -56,20 +57,20 @@ namespace PhunSharp.ArchiveSyntax
             while (!cs.IsEnd())
             {
                 //如果是大括号则进入栈记录状态
-                if (cs.Peek(0) == '{')
+                if (cs.Current == '{')
                 {
                     var b_start = cs.Next();
                     itemValue.Append(b_start);
                     stack.Push(b_start);
                 }
-                else if (cs.Peek(0) == '}')
+                else if (cs.Current == '}')
                 {
                     var b_end = cs.Next();
                     itemValue.Append(b_end);
                     stack.Pop();
                 }
                 //如果栈中不存在括号并且是结束分号
-                else if (stack.Count == 0 && cs.Peek(0) == ';')
+                else if (stack.Count == 0 && cs.Current == ';')
                 {
                     cs.Next();
                     break;

@@ -1,6 +1,5 @@
 ﻿using Dex.Common;
 using PhunSharp.ArchiveSyntax;
-using PhunSharp.Entity;
 using System.Collections.Generic;
 
 namespace PhunSharp.Archive

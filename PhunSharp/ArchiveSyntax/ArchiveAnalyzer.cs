@@ -22,7 +22,7 @@ namespace PhunSharp.ArchiveSyntax
         /// <summary>
         /// 获取<see cref="ArchiveAnalyzer"/>实例
         /// </summary>
-        public static ArchiveAnalyzer GetInstance
+        public static ArchiveAnalyzer Instance
         {
             get
             {
