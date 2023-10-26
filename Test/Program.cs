@@ -15,7 +15,9 @@ namespace Test
         
         static void Main(string[] args)
         {
-            var c =  ArchiveTools.DeCompress(@"C:\Users\ASUS\Documents\Algodoo\scenes\downloads\81041_RS_A_15.phz");
+            //解包
+            var c =  ArchiveTools.DeCompress(@"C:\Users\ASUS\Documents\Algodoo\scenes\downloads\95463_3D_World.phz");
+            //打包
             ArchiveTools.Compress(c, @"E:\临时文件\test.phz");
             Console.WriteLine("导出完毕");
             Console.ReadKey();

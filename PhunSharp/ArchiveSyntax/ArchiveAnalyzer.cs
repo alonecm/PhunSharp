@@ -15,7 +15,6 @@ namespace PhunSharp.ArchiveSyntax
     /// </summary>
     public sealed partial class ArchiveAnalyzer
     {
-        private Lexer lexer;
         private static ArchiveAnalyzer instance;
         private static readonly object lockObject = new object();
 
@@ -39,34 +38,6 @@ namespace PhunSharp.ArchiveSyntax
 
         private ArchiveAnalyzer()
         {
-            lexer = new Lexer();
-            lexer.AddCommentFormats(CommentRemover.DefaultPattern1, CommentRemover.DefaultPattern2);
-            lexer.AddSingleSymbol('=', "symbol");
-            lexer.AddSingleSymbol('!', "symbol");
-            lexer.AddSingleSymbol('@', "symbol");
-            lexer.AddSingleSymbol('#', "symbol");
-            lexer.AddSingleSymbol('$', "symbol");
-            lexer.AddSingleSymbol('^', "symbol");
-            lexer.AddSingleSymbol('+', "symbol");
-            lexer.AddSingleSymbol('-', "symbol");
-            lexer.AddSingleSymbol('*', "symbol");
-            lexer.AddSingleSymbol('/', "symbol");
-            lexer.AddSingleSymbol('%', "symbol");
-            lexer.AddSingleSymbol('(', "symbol");
-            lexer.AddSingleSymbol(')', "symbol");
-            lexer.AddSingleSymbol('[', "symbol");
-            lexer.AddSingleSymbol(']', "symbol");
-            lexer.AddSingleSymbol('{', "symbol");
-            lexer.AddSingleSymbol('}', "symbol");
-            lexer.AddSingleSymbol(',', "symbol");
-            lexer.AddSingleSymbol('.', "symbol");
-            lexer.AddSingleSymbol(':', "symbol");
-            lexer.AddSingleSymbol(';', "symbol");
-            lexer.AddSingleSymbol('<', "symbol");
-            lexer.AddSingleSymbol('>', "symbol");
-            lexer.AddSingleSymbol('?', "symbol");
-            lexer.AddSingleSymbol('&', "symbol");
-            lexer.AddSingleSymbol('|', "symbol");
         }
         
         /// <summary>
@@ -81,7 +52,7 @@ namespace PhunSharp.ArchiveSyntax
             var s = new Container<ParseSet>();
             var o = new Container<ParseObject>();
             //记录
-            var phn = new ArchiveParser(lexer.Tokenize(archiveContent)).Parse();
+            var phn = new ArchiveParser(archiveContent).Parse();
             foreach (var item in phn.Objs)
             {
                 switch (item)
