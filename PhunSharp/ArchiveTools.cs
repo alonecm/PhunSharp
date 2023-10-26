@@ -1,4 +1,5 @@
 ﻿using PhunSharp.Archive;
+using PhunSharp.ArchiveSyntax;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,9 +13,9 @@ namespace PhunSharp
 {
 
     /// <summary>
-    /// 存档读取器
+    /// 存档工具
     /// </summary>
-    public sealed class ArchiveReader
+    public sealed class ArchiveTools
     {
         /// <summary>
         /// 解压指定路径下多个phz文件
@@ -86,13 +87,13 @@ namespace PhunSharp
                                         }
                                     }
                                     break;
+
                                 default://贴图文件
                                     zip.Textures.Add(item.Name, new Bitmap(tfs));
                                     break;
                             }
                         }
                     }
-                    //释放打开此压缩包所占用的资源
                 }
                 return zip;
             }
@@ -116,6 +117,8 @@ namespace PhunSharp
             //创建材质包
             foreach (var item in package.Textures)
             {
+                //创建材质临时文件夹
+                DirectoryInfo textureDirTemp = Directory.CreateDirectory(Path.GetDirectoryName(path) + "\\Temp\\texture");
                 using (FileStream fs = new FileStream(dirTemp.FullName + $"\\texture\\{item.Key}", FileMode.Create))
                 {
                     byte[] image = BitmapToByteArray(new Bitmap(item.Value));
@@ -126,17 +129,18 @@ namespace PhunSharp
             using (FileStream fs = new FileStream(dirTemp.FullName + "\\scene.phn", FileMode.Create))
             {
                 //将设置信息罗列出来，之前怎么弄得就怎么弄回去，将对象信息加上去
-                string strs = "// FileVersion 19\n// Algodoo scene created by Algodoo for Education v2.0.2 b10\n\n";
+                StringBuilder sb = new StringBuilder("// FileVersion PH_10\n// Algodoo scene created by PhunSharp v1.0 \n\n");
                 //字符串化设置
-                foreach (var item in package.Phn.Settings)
+                sb.Append(package.Phn.Variables);
+                foreach (var item in package.Phn.Settings.Values)
                 {
-                    strs += item.ToString() + "\n";
+                    sb.AppendLine(item.ToString());
                 }
-                foreach (var item in package.Phn.Entities)
+                foreach (var item in package.Phn.Objects)
                 {
-                    strs += item.ToString() + "\n";
+                    sb.AppendLine(item.ToString());
                 }
-                byte[] buffer = Encoding.UTF8.GetBytes(strs);
+                byte[] buffer = Encoding.UTF8.GetBytes(sb.ToString());
                 fs.Write(buffer, 0, buffer.Length);
             }
             //创建checkNum文件
@@ -145,10 +149,7 @@ namespace PhunSharp
                 StringBuilder sb = new StringBuilder();
                 foreach (var item in package.CheckNums)
                 {
-                    sb.Append(item.Key);
-                    sb.Append(" ");
-                    sb.Append(item.Value);
-                    sb.Append("\n");
+                    sb.AppendLine($"{item.Key} {item.Value}");
                 }
                 byte[] bytes = Encoding.UTF8.GetBytes(sb.ToString());
                 fs.Write(bytes, 0, bytes.Length);
@@ -171,7 +172,7 @@ namespace PhunSharp
         /// <returns>Phun存档</returns>
         private static ArchiveFile AnalyzeScene(string sceneThyme)
         {
-            return new ArchiveFile() { };
+            return ArchiveAnalyzer.GetInstance.Transform(sceneThyme);
         }
 
         /// <summary>
