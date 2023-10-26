@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Dex.Common;
+using PhunSharp.ArchiveSyntax;
+using PhunSharp.Entity;
+using System.Collections.Generic;
 
 namespace PhunSharp.Archive
 {
@@ -7,26 +10,37 @@ namespace PhunSharp.Archive
     /// </summary>
     public sealed class ArchiveFile
     {
-        public ArchiveFile()
+        internal ArchiveFile()
         {
-            Settings = new Dictionary<string, ArchiveSetting>();
-            Entities = new Dictionary<int, BaseEntity>();
-            Info = new ArchiveInfo();
+            Settings = new Dictionary<string, ParseSetting>();
+            Objects = new Container<ParseObject>();
+            Sets = new Container<ParseSet>();
         }
 
         /// <summary>
-        /// 存档信息
+        /// 存档设置
         /// </summary>
-        public ArchiveInfo Info { get; }
+        public Dictionary<string, ParseSetting> Settings { get; internal set; }
+        /// <summary>
+        /// 存档对象
+        /// </summary>
+        public Container<ParseObject> Objects { get; internal set; }
+        /// <summary>
+        /// 存档设定项
+        /// </summary>
+        public Container<ParseSet> Sets { get; internal set; }
+        /// <summary>
+        /// 存档变量
+        /// </summary>
+        public ParseVariables Variables { get; internal set; }
 
         /// <summary>
-        /// 存档设定
+        /// 创建存档
         /// </summary>
-        public Dictionary<string, ArchiveSetting> Settings { get; }
-
-        /// <summary>
-        /// 存档中包含的场景对象集合
-        /// </summary>
-        public Dictionary<int, BaseEntity> Entities { get; }
+        /// <returns></returns>
+        public static ArchiveFile CreateArchive()
+        {
+            return new ArchiveFile() {Variables = new ParseVariables(new Dictionary<string, object>())};
+        }
     }
 }

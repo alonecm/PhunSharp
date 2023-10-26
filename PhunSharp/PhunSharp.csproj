@@ -41,6 +41,9 @@
     <Reference Include="Dex.Interfaces">
       <HintPath>..\..\Dex.NET\Dex.Analysis\bin\Debug\Dex.Interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Dex.IO">
+      <HintPath>..\..\Dex.NET\Dex.IO\bin\Debug\Dex.IO.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -54,12 +57,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchiveAnalyzer.cs" />
-    <Compile Include="ArchiveSyntax\ArchiveEvaluator.cs" />
+    <Compile Include="ArchiveSyntax\AnalyzUtils.cs" />
+    <Compile Include="ArchiveSyntax\ArchiveAnalyzer.cs" />
     <Compile Include="ArchiveSyntax\ArchiveParser.cs" />
-    <Compile Include="Archive\ArchiveInfo.cs" />
-    <Compile Include="ArchiveReader.cs" />
-    <Compile Include="Archive\ArchiveSetting.cs" />
+    <Compile Include="ArchiveSyntax\ParseSet.cs" />
+    <Compile Include="ArchiveSyntax\ParseObject.cs" />
+    <Compile Include="ArchiveSyntax\ParsePhn.cs" />
+    <Compile Include="ArchiveSyntax\ParseSetting.cs" />
+    <Compile Include="ArchiveSyntax\ParseVariables.cs" />
+    <Compile Include="ArchiveTools.cs" />
     <Compile Include="Entity\BaseEntity.cs" />
     <Compile Include="Entity\Box.cs" />
     <Compile Include="Entity\Circle.cs" />
