@@ -20,27 +20,38 @@ namespace PhunSharp.ArchiveSyntax
             var itemName = new StringBuilder();
             while (!cs.IsEnd())
             {
-                //先记录名称
-                itemName.Append(cs.Next());
-                //如果是直接赋值号则读入
-                if (cs.Current == '=')
+                var c = cs.Next();//当前值
+                switch (c)
                 {
-                    cs.Next();
-                    var name = itemName.ToString();
-                    if (!dic.ContainsKey(name))
-                    {
-                        dic.Add(name, AnalyzeValue(cs));
-                    }
-                    itemName.Clear();
-                }
-                //检测当前是否是:=，是则读取值
-                else if (cs.Current == ':' && cs.Peek(1) == '=')
-                {
-                    //跳过这俩东西
-                    cs.Next();
-                    cs.Next();
-                    dic.Add(itemName.ToString(), AnalyzeValue(cs));
-                    itemName.Clear();
+                    case '='://设置项
+                        var name = itemName.ToString();
+                        var value = AnalyzeValue(cs);
+                        //有则覆盖，没有则添加
+                        if (!dic.ContainsKey(name))
+                        {
+                            dic.Add(name, value);
+                        }
+                        else
+                        {
+                            dic[name] = value;
+                        }
+                        itemName.Clear();
+                        break;
+                    case ':'://实体内部和全局变量
+                        if (cs.Current == '=')
+                        {
+                            //跳过=当前
+                            cs.Next();
+                            name = itemName.ToString();
+                            value = AnalyzeValue(cs);
+                            dic.Add(name, value);
+                            itemName.Clear();
+                        }
+                        break;
+                    default:
+                        //先记录名称
+                        itemName.Append(c);
+                        break;
                 }
             }
             return dic;
@@ -52,34 +63,62 @@ namespace PhunSharp.ArchiveSyntax
         /// <returns></returns>
         private static string AnalyzeValue(CharStream cs)
         {
-            var stack = new Stack<char>();
+            //分支栈
+            var branchStack = new Stack<char>();
             var itemValue = new StringBuilder();
             while (!cs.IsEnd())
             {
-                //如果是大括号则进入栈记录状态
-                if (cs.Current == '{')
+                var c = cs.Next();
+                switch (c)
                 {
-                    var b_start = cs.Next();
-                    itemValue.Append(b_start);
-                    stack.Push(b_start);
+                    case '"':
+                        //确保是真正的字符串
+                        if (cs.Peek(-1) != '\\')
+                        {
+                            //检查如果栈顶也是字符串则弹出
+                            if (branchStack.Count > 0 && branchStack.Peek() == '"')
+                            {
+                                branchStack.Pop();
+                            }
+                            else
+                            {
+                                branchStack.Push(c);
+                            }
+                        }
+                        break;
+                    case '{':
+                    case '[':
+                    case '(':
+                        branchStack.Push(c);
+                        break;
+                    case '}':
+                        if (branchStack.Peek()=='{')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ']':
+                        if (branchStack.Peek() == '[')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ')':
+                        if (branchStack.Peek() == '(')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ';':
+                        if (branchStack.Count==0)
+                        {
+                            return itemValue.ToString();
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                else if (cs.Current == '}')
-                {
-                    var b_end = cs.Next();
-                    itemValue.Append(b_end);
-                    stack.Pop();
-                }
-                //如果栈中不存在括号并且是结束分号
-                else if (stack.Count == 0 && cs.Current == ';')
-                {
-                    cs.Next();
-                    break;
-                }
-                else
-                {
-                    //先记录名称
-                    itemValue.Append(cs.Next());
-                }
+                itemValue.Append(c);
             }
             return itemValue.ToString();
         }

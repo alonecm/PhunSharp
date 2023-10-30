@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace PhunSharp.ArchiveSyntax
 {
-    /// <summary>
-    /// 全局变量集
-    /// </summary>
-    public sealed class ParseVariables : ExtendableObject
+    public sealed class ParseSceneMyVars : ExtendableObject
     {
-        public ParseVariables(Dictionary<string, object> vars) : base (vars)
+        public ParseSceneMyVars(Dictionary<string, object> vars) : base(vars)
         {
         }
         public override string ToString()
@@ -21,7 +18,7 @@ namespace PhunSharp.ArchiveSyntax
             var dic = this.GetProperties();
             foreach (var item in dic)
             {
-                sb.AppendLine($"{item.Key} = {item.Value};");
+                sb.AppendLine($"{item.Key} := {item.Value};");
             }
             return sb.ToString();
         }

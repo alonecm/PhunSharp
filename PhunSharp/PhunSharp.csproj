@@ -60,6 +60,7 @@
     <Compile Include="ArchiveSyntax\AnalyzUtils.cs" />
     <Compile Include="ArchiveSyntax\ArchiveAnalyzer.cs" />
     <Compile Include="ArchiveSyntax\ArchiveParser.cs" />
+    <Compile Include="ArchiveSyntax\ParseSceneMyVars.cs" />
     <Compile Include="ArchiveSyntax\ParseSet.cs" />
     <Compile Include="ArchiveSyntax\ParseObject.cs" />
     <Compile Include="ArchiveSyntax\ParsePhn.cs" />

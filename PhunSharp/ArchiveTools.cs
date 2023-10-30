@@ -100,6 +100,29 @@ namespace PhunSharp
         }
 
         /// <summary>
+        /// 获取Phn文件的内容
+        /// </summary>
+        /// <param name="phzPath"></param>
+        /// <returns></returns>
+        public static string GetPhnContent(ArchiveZip package)
+        {
+            //将设置信息罗列出来，之前怎么弄得就怎么弄回去，将对象信息加上去
+            StringBuilder sb = new StringBuilder("// FileVersion PH_10\n// Algodoo scene created by PhunSharp v1.0 \n\n");
+            //字符串化设置
+            sb.AppendLine(package.Phn.Variables.ToString());
+            sb.AppendLine(package.Phn.SceneVariables.ToString());
+            foreach (var item in package.Phn.Settings.Values)
+            {
+                sb.AppendLine(item.ToString());
+            }
+            foreach (var item in package.Phn.Objects)
+            {
+                sb.AppendLine(item.ToString());
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
         /// 压缩指定的Phun包
         /// </summary>
         /// <param name="package">指定的phun包</param>
@@ -128,19 +151,7 @@ namespace PhunSharp
             //创建存档文件(这里需要修一修)
             using (FileStream fs = new FileStream(dirTemp.FullName + "\\scene.phn", FileMode.Create))
             {
-                //将设置信息罗列出来，之前怎么弄得就怎么弄回去，将对象信息加上去
-                StringBuilder sb = new StringBuilder("// FileVersion PH_10\n// Algodoo scene created by PhunSharp v1.0 \n\n");
-                //字符串化设置
-                sb.Append(package.Phn.Variables);
-                foreach (var item in package.Phn.Settings.Values)
-                {
-                    sb.AppendLine(item.ToString());
-                }
-                foreach (var item in package.Phn.Objects)
-                {
-                    sb.AppendLine(item.ToString());
-                }
-                byte[] buffer = Encoding.UTF8.GetBytes(sb.ToString());
+                byte[] buffer = Encoding.UTF8.GetBytes(GetPhnContent(package));
                 fs.Write(buffer, 0, buffer.Length);
             }
             //创建checkNum文件

@@ -48,6 +48,7 @@ namespace PhunSharp.ArchiveSyntax
         public ArchiveFile Transform(string archiveContent)
         {
             ParseVariables vars = null;
+            ParseSceneMyVars svars = null;
             var st = new Dictionary<string, ParseSetting>();
             var s = new Container<ParseSet>();
             var o = new Container<ParseObject>();
@@ -57,6 +58,9 @@ namespace PhunSharp.ArchiveSyntax
             {
                 switch (item)
                 {
+                    case ParseSceneMyVars psv:
+                        svars = psv;
+                        break;
                     case ParseVariables pv:
                         vars = pv;
                         break;
@@ -73,7 +77,7 @@ namespace PhunSharp.ArchiveSyntax
                         break;
                 }
             }
-            return new ArchiveFile() { Variables = vars, Settings = st, Sets = s, Objects = o };
+            return new ArchiveFile() { SceneVariables = svars, Variables = vars, Settings = st, Sets = s, Objects = o };
         }
     }
 }
