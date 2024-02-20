@@ -1,6 +1,5 @@
 ﻿using Dex.Common;
 using PhunSharp.ArchiveSyntax;
-using PhunSharp.Entity;
 using System.Collections.Generic;
 
 namespace PhunSharp.Archive
@@ -10,13 +9,6 @@ namespace PhunSharp.Archive
     /// </summary>
     public sealed class ArchiveFile
     {
-        internal ArchiveFile()
-        {
-            Settings = new Dictionary<string, ParseSetting>();
-            Objects = new Container<ParseObject>();
-            Sets = new Container<ParseSet>();
-        }
-
         /// <summary>
         /// 存档设置
         /// </summary>
@@ -30,17 +22,12 @@ namespace PhunSharp.Archive
         /// </summary>
         public Container<ParseSet> Sets { get; internal set; }
         /// <summary>
-        /// 存档变量
+        /// 全局变量
         /// </summary>
         public ParseVariables Variables { get; internal set; }
-
         /// <summary>
-        /// 创建存档
+        /// 存档变量
         /// </summary>
-        /// <returns></returns>
-        public static ArchiveFile CreateArchive()
-        {
-            return new ArchiveFile() {Variables = new ParseVariables(new Dictionary<string, object>())};
-        }
+        public ParseSceneMyVars SceneVariables { get; internal set; }
     }
 }

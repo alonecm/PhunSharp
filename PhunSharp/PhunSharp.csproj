@@ -32,17 +32,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dex.Analysis">
-      <HintPath>..\..\Dex.NET\Dex.Analysis\bin\Debug\Dex.Analysis.dll</HintPath>
+    <Reference Include="Dex.Analysis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.Analysis.dll</HintPath>
     </Reference>
-    <Reference Include="Dex.Common">
-      <HintPath>..\..\Dex.NET\Dex.Analysis\bin\Debug\Dex.Common.dll</HintPath>
+    <Reference Include="Dex.Attribute, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.Attribute.dll</HintPath>
     </Reference>
-    <Reference Include="Dex.Interfaces">
-      <HintPath>..\..\Dex.NET\Dex.Analysis\bin\Debug\Dex.Interfaces.dll</HintPath>
+    <Reference Include="Dex.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Dex.IO">
-      <HintPath>..\..\Dex.NET\Dex.IO\bin\Debug\Dex.IO.dll</HintPath>
+    <Reference Include="Dex.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Dex.IO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.IO.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,32 +68,15 @@
     <Compile Include="ArchiveSyntax\AnalyzUtils.cs" />
     <Compile Include="ArchiveSyntax\ArchiveAnalyzer.cs" />
     <Compile Include="ArchiveSyntax\ArchiveParser.cs" />
+    <Compile Include="ArchiveSyntax\ParseSceneMyVars.cs" />
     <Compile Include="ArchiveSyntax\ParseSet.cs" />
     <Compile Include="ArchiveSyntax\ParseObject.cs" />
     <Compile Include="ArchiveSyntax\ParsePhn.cs" />
     <Compile Include="ArchiveSyntax\ParseSetting.cs" />
     <Compile Include="ArchiveSyntax\ParseVariables.cs" />
     <Compile Include="ArchiveTools.cs" />
-    <Compile Include="Entity\BaseEntity.cs" />
-    <Compile Include="Entity\Box.cs" />
-    <Compile Include="Entity\Circle.cs" />
-    <Compile Include="Entity\Fixjoint.cs" />
-    <Compile Include="Entity\GeomEntity.cs" />
     <Compile Include="Archive\ArchiveFile.cs" />
     <Compile Include="Archive\ArchiveZip.cs" />
-    <Compile Include="Entity\Hinge.cs" />
-    <Compile Include="Entity\ICollide.cs" />
-    <Compile Include="Entity\IFollowGeometry.cs" />
-    <Compile Include="Entity\IGeomExtra.cs" />
-    <Compile Include="Entity\IPosition.cs" />
-    <Compile Include="Entity\IRotation.cs" />
-    <Compile Include="Entity\ISize.cs" />
-    <Compile Include="Entity\Laser.cs" />
-    <Compile Include="Entity\Pen.cs" />
-    <Compile Include="Entity\Plane.cs" />
-    <Compile Include="Entity\Polygon.cs" />
-    <Compile Include="Entity\Thruster.cs" />
-    <Compile Include="Entity\Water.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

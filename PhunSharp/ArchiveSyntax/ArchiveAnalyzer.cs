@@ -15,14 +15,13 @@ namespace PhunSharp.ArchiveSyntax
     /// </summary>
     public sealed partial class ArchiveAnalyzer
     {
-        private Lexer lexer;
         private static ArchiveAnalyzer instance;
         private static readonly object lockObject = new object();
 
         /// <summary>
         /// 获取<see cref="ArchiveAnalyzer"/>实例
         /// </summary>
-        public static ArchiveAnalyzer GetInstance
+        public static ArchiveAnalyzer Instance
         {
             get
             {
@@ -39,34 +38,6 @@ namespace PhunSharp.ArchiveSyntax
 
         private ArchiveAnalyzer()
         {
-            lexer = new Lexer();
-            lexer.AddCommentFormats(CommentRemover.DefaultPattern1, CommentRemover.DefaultPattern2);
-            lexer.AddSingleSymbol('=', "symbol");
-            lexer.AddSingleSymbol('!', "symbol");
-            lexer.AddSingleSymbol('@', "symbol");
-            lexer.AddSingleSymbol('#', "symbol");
-            lexer.AddSingleSymbol('$', "symbol");
-            lexer.AddSingleSymbol('^', "symbol");
-            lexer.AddSingleSymbol('+', "symbol");
-            lexer.AddSingleSymbol('-', "symbol");
-            lexer.AddSingleSymbol('*', "symbol");
-            lexer.AddSingleSymbol('/', "symbol");
-            lexer.AddSingleSymbol('%', "symbol");
-            lexer.AddSingleSymbol('(', "symbol");
-            lexer.AddSingleSymbol(')', "symbol");
-            lexer.AddSingleSymbol('[', "symbol");
-            lexer.AddSingleSymbol(']', "symbol");
-            lexer.AddSingleSymbol('{', "symbol");
-            lexer.AddSingleSymbol('}', "symbol");
-            lexer.AddSingleSymbol(',', "symbol");
-            lexer.AddSingleSymbol('.', "symbol");
-            lexer.AddSingleSymbol(':', "symbol");
-            lexer.AddSingleSymbol(';', "symbol");
-            lexer.AddSingleSymbol('<', "symbol");
-            lexer.AddSingleSymbol('>', "symbol");
-            lexer.AddSingleSymbol('?', "symbol");
-            lexer.AddSingleSymbol('&', "symbol");
-            lexer.AddSingleSymbol('|', "symbol");
         }
         
         /// <summary>
@@ -77,15 +48,19 @@ namespace PhunSharp.ArchiveSyntax
         public ArchiveFile Transform(string archiveContent)
         {
             ParseVariables vars = null;
+            ParseSceneMyVars svars = null;
             var st = new Dictionary<string, ParseSetting>();
             var s = new Container<ParseSet>();
             var o = new Container<ParseObject>();
             //记录
-            var phn = new ArchiveParser(lexer.Tokenize(archiveContent)).Parse();
+            var phn = new ArchiveParser(archiveContent).Parse();
             foreach (var item in phn.Objs)
             {
                 switch (item)
                 {
+                    case ParseSceneMyVars psv:
+                        svars = psv;
+                        break;
                     case ParseVariables pv:
                         vars = pv;
                         break;
@@ -102,7 +77,7 @@ namespace PhunSharp.ArchiveSyntax
                         break;
                 }
             }
-            return new ArchiveFile() { Variables = vars, Settings = st, Sets = s, Objects = o };
+            return new ArchiveFile() { SceneVariables = svars, Variables = vars, Settings = st, Sets = s, Objects = o };
         }
     }
 }

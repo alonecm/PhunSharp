@@ -5,195 +5,240 @@ using System.Text;
 
 namespace PhunSharp.ArchiveSyntax
 {
-    public sealed partial class ArchiveAnalyzer
+    internal sealed class ArchiveParser
     {
-        internal sealed class ArchiveParser : Parser<ParsePhn>
-        {
-            private Stack<string> branchStack = new Stack<string>();//花括号栈
-            public ArchiveParser(LexicalResult lexicalResult) : base(lexicalResult)
-            {
-            }
+        private Stack<char> branchStack;
+        private CharStream stream;
 
-            /// <summary>
-            /// 解析
-            /// </summary>
-            /// <returns></returns>
-            public override ParsePhn Parse()
+        public ArchiveParser(string context)
+        {
+            stream = new CharStream(content: context);
+            branchStack = new Stack<char>();//花括号栈
+        }
+
+        /// <summary>
+        /// 解析
+        /// </summary>
+        /// <returns></returns>
+        public ParsePhn Parse()
+        {
+            var nodes = new Container<ExtendableObject>();
+            var varCollection = new Dictionary<string, object>();
+            var sceneVarCollection = new Dictionary<string, object>();
+            var sb = new StringBuilder();
+            //先进行第一部分的解析然后分类
+            while (!stream.IsEnd())
             {
-                var nodes = new Container<ExtendableObject>();
-                var varCollection = new Dictionary<string, object>();
-                var sb = new StringBuilder();
-                //先进行第一部分的解析然后分类
-                while (!IsEnd())
+                var c = stream.Next();
+                switch (c)
                 {
-                    sb.Append(Next().Value);
-                    if (Current.Value == "{")
-                    {
-                        ParseObjectDef(nodes, sb.Append(ParseBlock()).ToString());
+                    case '{'://块
+                        var block = ParseBlock(c);
+                        //合并
+                        var str = sb.Append(block).ToString();
+                        //解析
+                        ParseObjectDef(nodes, str);
                         sb.Clear();
-                    }
-                    else if (Current.Value == ":" && Peek(1).Value=="=")
-                    {
-                        var name = sb.ToString();//先记录名称
-                        Next();
-                        Next();
-                        var value = ParseVariable();//再记录值
-                        varCollection.Add(name, value);
+                        break;
+                    case ':'://Scene.my变量
+                        if (stream.Current == '=')
+                        {
+                            var name1 = sb.ToString();
+                            stream.Next();
+                            var value1 = ParseVariable();
+                            //相同则覆盖，不同则添加
+                            if (!sceneVarCollection.ContainsKey(name1))
+                            {
+                                sceneVarCollection.Add(name1, value1);
+                            }
+                            else
+                            {
+                                sceneVarCollection[name1] = value1;
+                            }
+                            sb.Clear();
+                        }
+                        break;
+                    case '='://全局变量
+                        var name2 = sb.ToString();//先记录名称
+                        var value2 = ParseVariable();//再记录值
+                        //相同则覆盖，不同则添加
+                        if (!varCollection.ContainsKey(name2))
+                        {
+                            varCollection.Add(name2, value2);
+                        }
+                        else
+                        {
+                            varCollection[name2] = value2;
+                        }
                         sb.Clear();
-                    }
-                }
-                nodes.Add(new ParseVariables(varCollection));
-                return new ParsePhn(nodes);
-            }
-            /// <summary>
-            /// 解析定义并记录
-            /// </summary>
-            /// <param name="nodes"></param>
-            /// <param name="sb"></param>
-            private void ParseObjectDef(Container<ExtendableObject> nodes, string sb)
-            {
-                var declare = sb.Substring(0, sb.IndexOf("{"));
-                if (declare.Contains("Scene.add"))
-                {
-                    nodes.Add(new ParseObject(declare.Replace("Scene.add", ""), sb.Remove(0, sb.IndexOf("{"))));
-                }
-                else if (declare.Contains("Scene.set"))
-                {
-                    nodes.Add(new ParseSet(declare.Replace("Scene.set", ""), sb.Remove(0, sb.IndexOf("{"))));
-                }
-                else if (declare.Contains("->"))
-                {
-                    nodes.Add(new ParseSetting(declare.Replace("->", ""), sb.Remove(0, sb.IndexOf("{"))));
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
                 }
             }
-            /// <summary>
-            /// 解析变量
-            /// </summary>
-            /// <returns></returns>
-            private string ParseVariable()
+            nodes.Add(new ParseVariables(varCollection));
+            nodes.Add(new ParseSceneMyVars(sceneVarCollection));
+            return new ParsePhn(nodes);
+        }
+
+        /// <summary>
+        /// 解析定义并记录
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <param name="sb"></param>
+        private void ParseObjectDef(Container<ExtendableObject> nodes, string sb)
+        {
+            var declare = sb.Substring(0, sb.IndexOf("{"));
+            if (declare.Contains("Scene.add"))
             {
-                StringBuilder sb = new StringBuilder();
-                while (!IsEnd())
+                nodes.Add(new ParseObject(declare.Replace("Scene.add", ""), sb.Remove(0, sb.IndexOf("{"))));
+            }
+            else if (declare.Contains("Scene.set"))
+            {
+                nodes.Add(new ParseSet(declare.Replace("Scene.set", ""), sb.Remove(0, sb.IndexOf("{"))));
+            }
+            else if (declare.Contains("->"))
+            {
+                nodes.Add(new ParseSetting(declare.Replace("->", ""), sb.Remove(0, sb.IndexOf("{"))));
+            }
+        }
+
+        /// <summary>
+        /// 解析变量
+        /// </summary>
+        /// <returns></returns>
+        private string ParseVariable()
+        {
+            var itemValue = new StringBuilder();
+            while (!stream.IsEnd())
+            {
+                var c = stream.Next();
+                switch (c)
                 {
-                    //记录并前进
-                    switch (Current.Value)
-                    {
-                        case "(":
-                        case "[":
-                        case "{":
-                            //开括号则入栈
-                            sb.Append(Current.Value);
-                            branchStack.Push(Next().Value);
-                            break;
-                        case "}"://闭括号则出栈
-                            if (branchStack.Peek() == "{")
+                    case '"':
+                        //确保是真正的字符串
+                        if (stream.Peek(-1) != '\\')
+                        {
+                            //检查如果栈顶也是字符串则弹出
+                            if (branchStack.Count > 0 && branchStack.Peek() == '"')
                             {
-                                sb.Append(Next().Value);
                                 branchStack.Pop();
-                            }
-                            break;
-                        case "]"://闭括号则出栈
-                            if (branchStack.Peek() == "[")
-                            {
-                                sb.Append(Next().Value);
-                                branchStack.Pop();
-                            }
-                            break;
-                        case ")"://闭括号则出栈
-                            if (branchStack.Peek() == "(")
-                            {
-                                sb.Append(Next().Value);
-                                branchStack.Pop();
-                            }
-                            break;
-                        case ";":
-                            //如果不存在括号了则证明这个分号在外面则直接跳过分号并结束读取
-                            if (branchStack.Count==0)
-                            {
-                                Next();
-                                return sb.ToString();
                             }
                             else
                             {
-                                sb.Append(Next().Value);
+                                branchStack.Push(c);
                             }
-                            break;
-                        default:
-                            if (Current.Type == "string")
-                            {
-                                sb.Append($"\"{Next().Value}\"");
-                            }
-                            else
-                            {
-                                sb.Append(Next().Value);
-                            }
-                            break;
-                    }
+                        }
+                        break;
+                    case '{':
+                    case '[':
+                    case '(':
+                        //只要前面没东西或者前面不是字符串开头才能开始分支
+                        if (branchStack.Count == 0 || branchStack.Peek() != '"')
+                        {
+                            branchStack.Push(c);
+                        }
+                        break;
+                    case '}':
+                        if (branchStack.Peek() == '{')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ']':
+                        if (branchStack.Peek() == '[')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ')':
+                        if (branchStack.Peek() == '(')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ';':
+                        if (branchStack.Count == 0)
+                        {
+                            return itemValue.ToString();
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                return sb.ToString();
+                itemValue.Append(c);
             }
-            /// <summary>
-            /// 解析块
-            /// </summary>
-            private string ParseBlock()
+            return itemValue.ToString();
+        }
+        /// <summary>
+        /// 解析块
+        /// </summary>
+        private string ParseBlock(char blockStart)
+        {
+            //解析到的是块，因为外部不能压栈，所以只能从这开始
+            branchStack.Push(blockStart);
+            var itemValue = new StringBuilder();
+            itemValue.Append(blockStart);
+            while (!stream.IsEnd())
             {
-                //优先压栈
-                branchStack.Push(Current.Value);
-                StringBuilder sb = new StringBuilder(Next().Value);
-                //栈中为空则弹出
-                while (!IsEnd() && branchStack.Count > 0)
+                var c = stream.Next();
+                switch (c)
                 {
-                    //记录并前进
-                    switch (Current.Value)
-                    {
-                        //开括号则入栈
-                        case "(":
-                        case "[":
-                        case "{":
-                            sb.Append(Current.Value);
-                            branchStack.Push(Next().Value);
-                            break;
-                        //闭括号则出栈
-                        case "}":
-                            if (branchStack.Peek()=="{")
+                    case '"':
+                        //确保是真正的字符串
+                        if (stream.Peek(-1) != '\\')
+                        {
+                            //检查如果栈顶也是字符串则弹出
+                            if (branchStack.Count > 0 && branchStack.Peek() == '"')
                             {
-                                sb.Append(Next().Value);
                                 branchStack.Pop();
-                            }
-                            break;
-                        case "]":
-                            if (branchStack.Peek() == "[")
-                            {
-                                sb.Append(Next().Value);
-                                branchStack.Pop();
-                            }
-                            break;
-                        case ")":
-                            if (branchStack.Peek() == "(")
-                            {
-                                sb.Append(Next().Value);
-                                branchStack.Pop();
-                            }
-                            break;
-                        default:
-                            if (Current.Type=="string")
-                            {
-                                sb.Append($"\"{Next().Value}\"");
                             }
                             else
                             {
-                                sb.Append(Next().Value);
+                                branchStack.Push(c);
                             }
-                            break;
-                    }
+                        }
+                        break;
+                    case '{':
+                    case '[':
+                    case '(':
+                        //只要前面没东西或者前面不是字符串开头才能开始分支
+                        if (branchStack.Count == 0 || branchStack.Peek() != '"')
+                        {
+                            branchStack.Push(c);
+                        }
+                        break;
+                    case '}':
+                        if (branchStack.Peek() == '{')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ']':
+                        if (branchStack.Peek() == '[')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ')':
+                        if (branchStack.Peek() == '(')
+                        {
+                            branchStack.Pop();
+                        }
+                        break;
+                    case ';':
+                        if (branchStack.Count == 0)
+                        {
+                            return itemValue.ToString();
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                //如果有分号则向后移动一个跳过分号
-                if (Current.Value==";")
-                {
-                    Next();
-                }
-                return sb.ToString();
+                itemValue.Append(c);
             }
+            return itemValue.ToString();
         }
     }
 }
