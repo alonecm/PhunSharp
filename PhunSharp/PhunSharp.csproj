@@ -32,17 +32,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dex.Analysis">
-      <HintPath>..\..\Dex.NET\Dex.Analysis\bin\Debug\Dex.Analysis.dll</HintPath>
+    <Reference Include="Dex.Analysis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.Analysis.dll</HintPath>
     </Reference>
-    <Reference Include="Dex.Common">
-      <HintPath>..\..\Dex.NET\Dex.Analysis\bin\Debug\Dex.Common.dll</HintPath>
+    <Reference Include="Dex.Attribute, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.Attribute.dll</HintPath>
     </Reference>
-    <Reference Include="Dex.Interfaces">
-      <HintPath>..\..\Dex.NET\Dex.Analysis\bin\Debug\Dex.Interfaces.dll</HintPath>
+    <Reference Include="Dex.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Dex.IO">
-      <HintPath>..\..\Dex.NET\Dex.IO\bin\Debug\Dex.IO.dll</HintPath>
+    <Reference Include="Dex.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Dex.IO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dex.NET\Test\bin\Debug\Dex.IO.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
